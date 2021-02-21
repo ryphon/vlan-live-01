@@ -13,3 +13,7 @@ variable "dns_zone" {
 variable "soa" {
   type = string
 }
+
+variable "email" {
+  type = bool
+}
