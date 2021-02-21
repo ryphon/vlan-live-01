@@ -9,3 +9,7 @@ output "hosted_zone_name" {
 output "hosted_zone_domain" {
   value = var.dns_zone_name
 }
+
+output "nameservers" {
+  value = aws_route53_zone.main.name_servers
+}
