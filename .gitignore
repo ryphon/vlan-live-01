@@ -1,0 +1,25 @@
+# Terraform
+.terraform
+.terragrunt*
+*.tfstate
+*.tfstate.backup
+
+# Terragrunt
+**/concourse_github_auth.sh
+
+# OS X
+.history
+.DS_Store
+
+# IntelliJ
+.idea_modules
+*.iml
+*.iws
+*.ipr
+.idea/
+build/
+*/build/
+out/
+
+# Secrets
+*.env
