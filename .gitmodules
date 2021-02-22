@@ -1,0 +1,3 @@
+[submodule "prime/us-west-2/prod/vlan/vlan-sls"]
+	path = prime/us-west-2/prod/vlan/vlan-sls
+	url = git@github.com:ryphon/vlan-sls.git
