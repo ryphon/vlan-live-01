@@ -7,4 +7,3 @@ data "terraform_remote_state" "route53" {
     key    = "prime/${var.aws_region}/_global/dns/${var.dns_zone}/terraform.tfstate"
   }
 }
-
