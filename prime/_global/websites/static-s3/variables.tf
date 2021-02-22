@@ -9,11 +9,3 @@ variable "tfstate_global_bucket" {
 variable "dns_zone" {
   type = string
 }
-
-variable "analytic_info" {
-  type = string
-}
-
-variable "analytics" {
-  type = bool
-}

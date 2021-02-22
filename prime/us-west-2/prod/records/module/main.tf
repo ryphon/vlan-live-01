@@ -3,7 +3,7 @@ data "terraform_remote_state" "vpc" {
 
   config = {
     region = var.aws_region
-    bucket = var.tfstate_global_bucket
+    bucket = "vlan-terragrunt-state"
     key    = "prime/${var.aws_region}/_global/vpc/terraform.tfstate"
   }
 }

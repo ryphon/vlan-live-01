@@ -12,8 +12,6 @@ include {
 # These are the variables we have to pass in to use the module specified in the terragrunt configuration above
 inputs = {
   dns_zone = "itisamystery.com"
-  analytics = true
-  analytic_info = "google-site-verification=L6zcvHAlwk_FYNfeazCCpZZ_kKDS0usj9dU3tkl_v-g"
   tags = {
     Env = "prod"
   }
