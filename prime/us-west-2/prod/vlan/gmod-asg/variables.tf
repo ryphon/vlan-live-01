@@ -38,6 +38,11 @@ variable "workshop_collection" {
   type = string
 }
 
-variable "docker_image" {
+variable "default_map" {
+  type = string
+  default = "ttt_dolls"
+}
+
+variable "image" {
   type = string
 }

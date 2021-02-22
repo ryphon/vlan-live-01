@@ -8,7 +8,7 @@ data "null_data_source" "tags" {
   }
 }
 
-data "template_file" "gmod" {
+data "template_file" "game" {
   template = <<EOF
 #!/bin/bash
 set -ex
@@ -20,7 +20,7 @@ yum install -y git \
                vim
 sudo systemctl start docker
 IPV4=$(curl 169.254.169.254/latest/meta-data/public-ipv4)
-aws route53 change-resource-record-sets --hosted-zone-id ${data.terraform_remote_state.route53.zone_id} --change-batch "{
+aws route53 change-resource-record-sets --hosted-zone-id ${data.terraform_remote_state.route53.outputs.hosted_zone_id} --change-batch "{
    \"Changes\":[
       {
          \"Action\":\"UPSERT\",
@@ -37,12 +37,12 @@ aws route53 change-resource-record-sets --hosted-zone-id ${data.terraform_remote
       }
    ]
 }"
-docker run -idt -e "GLST=${var.glst}" -e "WORKSHOPCOLLECTIONID=${var.workshop_collection}" -e "WORKSHOPDL=${var.workshop_collection}" -e "WORKSHOP=${var.workshop_collection}" -e "GAMEMODE=${var.game_type}" -e "MAP=${var.default_map}" -p 27015:27015/tcp -p 27015:27015/udp -v /home/ec2-user/${var.game_type}:/opt/steam ${var.docker_image}
+docker run -idt -e "GLST=${var.glst}" -e "WORKSHOPCOLLECTIONID=${var.workshop_collection}" -e "WORKSHOPDL=${var.workshop_collection}" -e "WORKSHOP=${var.workshop_collection}" -e "GAMEMODE=${var.game_type}" -e "MAP=${var.default_map}" -p 27015:27015/tcp -p 27015:27015/udp -v /home/ec2-user/${var.game_type}:/opt/steam ${var.image}
 EOF
 }
 
 resource "aws_launch_template" "game" {
-  name = "${var.game}-${var.game_type}-template"
+  name = "${var.game}-${var.game_type}"
   image_id = data.aws_ami.base_ami.id
   instance_type = var.instance_type
   update_default_version = true
@@ -58,7 +58,6 @@ resource "aws_launch_template" "game" {
     resource_type = "instance"
     tags = var.tags
   }
-  key_name = aws_key_pair.game.id
   lifecycle {
     create_before_destroy = true
   }

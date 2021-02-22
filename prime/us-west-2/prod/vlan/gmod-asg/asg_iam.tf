@@ -1,11 +1,10 @@
-resource "aws_iam_instance_profile" "instance_profile" {
+resource "aws_iam_instance_profile" "game" {
   name_prefix = "${var.game}-${var.game_type}-"
   role = aws_iam_role.game.name
 }
 
 resource "aws_iam_role" "game" {
   name = "${var.game}-${var.game_type}-role"
-  permissions_boundary = data.terraform_remote_state.permissions_boundary.outputs.service_policy_arn
   tags = merge(
     {
       "Name" = "${var.game}-${var.game_type}"
@@ -31,12 +30,12 @@ resource "aws_iam_role" "game" {
 NODE
 }
 
-resource "aws_iam_role_policy_attachment" "nodegroup" {
-  role = aws_iam_role.app.name
-  policy_arn = aws_iam_policy.app.arn
+resource "aws_iam_role_policy_attachment" "game" {
+  role = aws_iam_role.game.name
+  policy_arn = aws_iam_policy.game.arn
 }
 
-resource "aws_iam_policy" "app" {
+resource "aws_iam_policy" "game" {
   name   = "${var.game}-${var.game_type}-policy"
   policy = <<NODE
 {

@@ -1,39 +1,23 @@
-resource "aws_autoscaling_group" "app_blue" {
-  name = "${aws_launch_template.app.name}-blue"
-  max_size = var.blue_maximum_instances
-  desired_capacity = var.blue_desired_instances
-  min_size = var.blue_desired_instances
+resource "aws_autoscaling_group" "game" {
+  name = aws_launch_template.game.name
+  max_size = 1
+  desired_capacity = 0
+  min_size = 0
   force_delete = true
-  target_group_arns = [aws_lb_target_group.jms.arn]
   vpc_zone_identifier = [
-    local.subnets[0],
-    local.subnets[1]
-    # limiting to two AZs for css
+    data.terraform_remote_state.vpc.outputs.subnet_ids[0],
+    data.terraform_remote_state.vpc.outputs.subnet_ids[1],
+    data.terraform_remote_state.vpc.outputs.subnet_ids[2]
   ]
   launch_template {
-    id      = aws_launch_template.app.id
+    id      = aws_launch_template.game.id
     version = "$Latest"
   }
   tags = concat(data.null_data_source.tags.*.outputs,
     [
 	    {
 	      key = "Name"
-	      value = "${var.tla}-${var.env_name}-worker-blue"
-	      propagate_at_launch = "true"
-	    },
-	    {
-	      key = "HighAvail"
-	      value = "${var.tla}-${var.env_name}-blue"
-	      propagate_at_launch = "true"
-	    },
-	    {
-	      key = "Environment"
-	      value = var.env_name
-	      propagate_at_launch = true
-	    },
-	    {
-	      key = "kubernetes.io/cluster/${aws_eks_cluster.cluster.name}"
-	      value = "owned"
+	      value = "${var.game}-${var.game_type}"
 	      propagate_at_launch = "true"
 	    }
     ]

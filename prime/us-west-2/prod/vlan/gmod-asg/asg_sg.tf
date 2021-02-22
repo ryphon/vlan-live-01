@@ -5,7 +5,7 @@ resource "aws_security_group_rule" "gmodtcp" {
   to_port           = 27015
   protocol          = "TCP"
   cidr_blocks = ["0.0.0.0/0"]
-  security_group_id = aws_security_group.game
+  security_group_id = aws_security_group.game.id
 }
 
 resource "aws_security_group_rule" "gmodudp" {
@@ -15,7 +15,7 @@ resource "aws_security_group_rule" "gmodudp" {
   to_port           = 27015
   protocol          = "UDP"
   cidr_blocks = ["0.0.0.0/0"]
-  security_group_id = aws_security_group.game
+  security_group_id = aws_security_group.game.id
 }
 
 resource "aws_security_group_rule" "soldattcp" {
@@ -25,7 +25,7 @@ resource "aws_security_group_rule" "soldattcp" {
   to_port           = 27015
   protocol          = "TCP"
   cidr_blocks = ["0.0.0.0/0"]
-  security_group_id = aws_security_group.game
+  security_group_id = aws_security_group.game.id
 }
 
 resource "aws_security_group_rule" "valheimtcp" {
@@ -35,7 +35,7 @@ resource "aws_security_group_rule" "valheimtcp" {
   to_port           = 2458
   protocol          = "TCP"
   cidr_blocks = ["0.0.0.0/0"]
-  security_group_id = aws_security_group.game
+  security_group_id = aws_security_group.game.id
 }
 
 resource "aws_security_group_rule" "valheimudp" {
@@ -45,7 +45,7 @@ resource "aws_security_group_rule" "valheimudp" {
   to_port           = 2458
   protocol          = "UDP"
   cidr_blocks = ["0.0.0.0/0"]
-  security_group_id = aws_security_group.game
+  security_group_id = aws_security_group.game.id
 }
 
 resource "aws_security_group_rule" "minecrafttcp" {
@@ -55,7 +55,7 @@ resource "aws_security_group_rule" "minecrafttcp" {
   to_port           = 25565
   protocol          = "TCP"
   cidr_blocks = ["0.0.0.0/0"]
-  security_group_id = aws_security_group.game
+  security_group_id = aws_security_group.game.id
 }
 
 resource "aws_security_group_rule" "minecrafttcp2" {
@@ -65,7 +65,7 @@ resource "aws_security_group_rule" "minecrafttcp2" {
   to_port           = 9123
   protocol          = "TCP"
   cidr_blocks = ["0.0.0.0/0"]
-  security_group_id = aws_security_group.game
+  security_group_id = aws_security_group.game.id
 }
 
 resource "aws_security_group_rule" "web" {
@@ -75,7 +75,7 @@ resource "aws_security_group_rule" "web" {
   to_port           = 80
   protocol          = "TCP"
   cidr_blocks = ["0.0.0.0/0"]
-  security_group_id = aws_security_group.game
+  security_group_id = aws_security_group.game.id
 }
 resource "aws_security_group" "game" {
   name   = "${var.game}-${var.game_type}-sg"
