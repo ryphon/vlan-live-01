@@ -37,7 +37,7 @@ aws route53 change-resource-record-sets --hosted-zone-id ${data.terraform_remote
       }
    ]
 }"
-docker run -idt -e "GLST=${var.glst}" -e "WORKSHOPCOLLECTIONID=${var.workshop_collection}" -e "WORKSHOPDL=${var.workshop_collection}" -e "WORKSHOP=${var.workshop_collection}" -e "GAMEMODE=${var.game_type}" -e "MAP=${var.default_map}" -p 27015:27015/tcp -p 27015:27015/udp -v /home/ec2-user/${var.game_type}:/opt/steam ${var.image}
+WTF DO I DO
 EOF
 }
 
@@ -48,6 +48,16 @@ resource "aws_launch_template" "game" {
   update_default_version = true
   iam_instance_profile {
     name = aws_iam_instance_profile.game.name
+  }
+
+  block_device_mappings {
+    device_name = "/dev/sda1"
+
+    ebs {
+      volume_size = 30
+      volume_type = "gp3"
+      throughput = 125
+    }
   }
   tags = var.tags
   tag_specifications {
