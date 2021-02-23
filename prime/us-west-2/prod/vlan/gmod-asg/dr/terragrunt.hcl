@@ -13,11 +13,12 @@ include {
 inputs = {
   dns_zone = "itisamystery.com"
   game = "gmod"
-  game_type = "ttt"
-  game_type_short = "ttt"
+  game_type = "deathrun"
+  game_type_short = "dr"
   instance_type = "t3.small"
-  workshop_collection = "2091507172"
+  workshop_collection = "2227527602"
   image = "hackebein/garrysmod"
+  default_map = "dr_minecraft"
   tags = {
     Env = "prod"
   }
