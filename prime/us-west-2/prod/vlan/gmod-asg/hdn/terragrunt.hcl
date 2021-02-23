@@ -13,12 +13,15 @@ include {
 inputs = {
   dns_zone = "itisamystery.com"
   game = "gmod"
-  game_type = "ttt"
-  game_type_short = "ttt"
+  game_type = "thehidden"
+  game_type_short = "hdn"
   instance_type = "t3.small"
-  workshop_collection = "2091507172"
+  workshop_collection = "2091506439"
   image = "hackebein/garrysmod"
+  default_map = "hdn_executive"
   tags = {
+    Game = "gmod"
+    GameType = "hidden"
     Env = "prod"
   }
 }
