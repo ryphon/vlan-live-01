@@ -26,3 +26,4 @@ data "aws_ami" "base_ami" {
     values = ["amzn2-ami-hvm-*-x86_64-gp2"]
   }
 }
+

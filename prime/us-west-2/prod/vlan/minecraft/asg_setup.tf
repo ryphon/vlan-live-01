@@ -37,7 +37,7 @@ aws route53 change-resource-record-sets --hosted-zone-id ${data.terraform_remote
       }
    ]
 }"
-echo "WTF DO I DO"
+WTF DO I DO
 EOF
 }
 
