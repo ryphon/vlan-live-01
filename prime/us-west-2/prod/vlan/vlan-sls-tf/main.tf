@@ -68,3 +68,22 @@ data "terraform_remote_state" "soldat_dm" {
   }
 }
 
+data "terraform_remote_state" "valheim_default" {
+  backend = "s3"
+
+  config = {
+    region = var.aws_region
+    bucket = var.tfstate_global_bucket
+    key    = "prime/${var.aws_region}/prod/vlan/valheim/default/terraform.tfstate"
+  }
+}
+
+data "terraform_remote_state" "minecraft_default" {
+  backend = "s3"
+
+  config = {
+    region = var.aws_region
+    bucket = var.tfstate_global_bucket
+    key    = "prime/${var.aws_region}/prod/vlan/minecraft/default/terraform.tfstate"
+  }
+}

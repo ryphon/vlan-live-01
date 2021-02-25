@@ -30,19 +30,6 @@ variable "instance_type" {
   type = string
 }
 
-variable "glst" {
-  type = string
-}
-
-variable "workshop_collection" {
-  type = string
-}
-
-variable "default_map" {
-  type = string
-  default = "ttt_dolls"
-}
-
 variable "image" {
   type = string
 }
