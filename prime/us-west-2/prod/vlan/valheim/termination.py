@@ -11,7 +11,6 @@ queue_url = 'https://sqs.us-west-2.amazonaws.com/456410706824/valheim-default-li
 # frustrating to hard code this, idk about this quite yet
 while True:
     try:
-        print('Trying to receive.')
         response = sqs.receive_message(
             QueueUrl=queue_url,
             AttributeNames=[
@@ -27,6 +26,7 @@ while True:
         )
 
         message = response['Messages'][0]
+        print('Message recieved, starting kill process now.')
         message_body = json.loads(message['Body'])
 
         receipt_handle = message['ReceiptHandle']
@@ -57,5 +57,5 @@ while True:
         )
         # ur gonna die anyway LUL
         break
-    except KeyError as e:
-        print('KeyError, potentially expected. :: {}'.format(e))
+    except KeyError:
+        pass
