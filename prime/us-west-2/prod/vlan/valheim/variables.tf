@@ -32,10 +32,12 @@ variable "instance_type" {
 
 variable "image" {
   type = string
+  default = "lloesche/valheim-server"
 }
 
 variable "world_name" {
   type = string
+  default = "asdfasdf"
 }
 
 variable "server_password" {

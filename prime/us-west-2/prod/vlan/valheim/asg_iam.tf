@@ -19,7 +19,8 @@ resource "aws_iam_role" "game" {
       "Action": "sts:AssumeRole",
       "Principal": {
         "Service": [
-          "ec2.amazonaws.com"
+          "ec2.amazonaws.com",
+          "autoscaling.amazonaws.com"
         ]
       },
       "Effect": "Allow",
@@ -41,38 +42,41 @@ resource "aws_iam_policy" "game" {
 {
   "Version": "2012-10-17",
   "Statement": [
-      {
-          "Sid": "VisualEditor0",
-          "Effect": "Allow",
-          "Action": [
-              "s3:ListAllMyBuckets",
-              "s3:ListBucket",
-              "s3:HeadBucket"
-          ],
-          "Resource": "*"
-      },
-      {
-          "Sid": "VisualEditor1",
-          "Effect": "Allow",
-          "Action": [
-              "s3:PutObject",
-              "s3:GetObject",
-              "s3:DeleteObject"
-          ],
-          "Resource": [
-            "arn:aws:s3:::vlan-${var.game}-${var.game_type}-backup",
-            "arn:aws:s3:::vlan-${var.game}-${var.game_type}-backup/*"
-          ]
-      },
-      {
-          "Effect": "Allow",
-          "Action": [
-              "route53:ChangeResourceRecordSets"
-          ],
-          "Resource": [
-              "arn:aws:route53:::hostedzone/Z3OPAVCB13L0BG"
-          ]
-      }
+    {
+      "Effect": "Allow",
+      "Action": [
+          "s3:ListAllMyBuckets",
+          "s3:ListBucket",
+          "s3:HeadBucket"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "sqs:*",
+      "Resource": "${aws_sqs_queue.game.arn}"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+          "s3:PutObject",
+          "s3:GetObject",
+          "s3:DeleteObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::vlan-${var.game}-${var.game_type}-backup",
+        "arn:aws:s3:::vlan-${var.game}-${var.game_type}-backup/*"
+      ]
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+          "route53:ChangeResourceRecordSets"
+      ],
+      "Resource": [
+          "arn:aws:route53:::hostedzone/Z3OPAVCB13L0BG"
+      ]
+    }
   ]
 }
 NODE

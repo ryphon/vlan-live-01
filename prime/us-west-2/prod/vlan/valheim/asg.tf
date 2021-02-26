@@ -22,8 +22,31 @@ resource "aws_autoscaling_group" "game" {
 	    }
     ]
   )
-
   lifecycle {
     create_before_destroy = true
   }
+}
+
+resource "aws_autoscaling_lifecycle_hook" "game" {
+  name                   = "${var.game}-${var.game_type}-terminate"
+  autoscaling_group_name = aws_autoscaling_group.game.name
+  default_result         = "ABANDON"
+  heartbeat_timeout      = 3600
+  lifecycle_transition   = "autoscaling:EC2_INSTANCE_TERMINATING"
+  notification_metadata = <<EOF
+{
+  "game": ${var.game},
+  "gameType": ${var.game_type},
+  "asgName": ${aws_autoscaling_group.game.id}
+}
+EOF
+  notification_target_arn = aws_sqs_queue.game.arn
+  role_arn                = aws_iam_role.game.arn
+}
+
+resource "aws_sqs_queue" "game" {
+  name                      = "${var.game}-${var.game_type}-lifecycle"
+  max_message_size          = 2048
+  message_retention_seconds = 86400
+  tags = var.tags
 }
