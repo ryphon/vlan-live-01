@@ -26,12 +26,15 @@ while True:
             WaitTimeSeconds=2
         )
 
-        message = json.loads(response['Messages'][0]['Body'])
-        print('Message received: {}'.format(message))
-        metadata = json.loads(message['NotificationMetadata'])
-        lifecycle_hook_name = message['LifecycleHookName']
-        autoscaling_group_name = metadata['asgName']
+        message = response['Messages'][0]
+        message_body = json.loads(message['Body'])
+
         receipt_handle = message['ReceiptHandle']
+        metadata = json.loads(message_body['NotificationMetadata'])
+
+        lifecycle_hook_name = message_body['LifecycleHookName']
+        autoscaling_group_name = metadata['asgName']
+
         # Delete the message once I receive
         sqs.delete_message(
             QueueUrl=queue_url,
@@ -45,12 +48,14 @@ while True:
         # wait for init_script to back up the world as it is after the stop
         time.sleep(30)
 
+        # now you can allow the instance to die
         response = asg.complete_lifecycle_action(
             LifecycleHookName=lifecycle_hook_name,
             AutoScalingGroupName=autoscaling_group_name,
             LifecycleActionResult='COMPLETE',
             LifecycleActionToken=message['LifecycleActionToken']
         )
+        # ur gonna die anyway LUL
         break
     except KeyError as e:
-        print('KeyError, potentially expected? :: {}'.format(e))
+        print('KeyError, potentially expected. :: {}'.format(e))
