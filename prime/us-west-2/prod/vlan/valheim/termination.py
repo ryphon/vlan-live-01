@@ -30,10 +30,10 @@ while True:
         message_body = json.loads(message['Body'])
 
         receipt_handle = message['ReceiptHandle']
-        metadata = json.loads(message_body['NotificationMetadata'])
+        metadata = json.loads(message_body['NotificationMetadata'].strip())
 
         lifecycle_hook_name = message_body['LifecycleHookName']
-        autoscaling_group_name = 'valheim-default'
+        autoscaling_group_name = metadata['asgName']
 
         # Delete the message once I receive
         sqs.delete_message(
