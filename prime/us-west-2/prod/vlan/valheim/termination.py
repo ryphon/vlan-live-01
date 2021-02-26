@@ -11,6 +11,7 @@ queue_url = 'https://sqs.us-west-2.amazonaws.com/456410706824/valheim-default-li
 # frustrating to hard code this, idk about this quite yet
 while True:
     try:
+        print('Trying to receive.')
         response = sqs.receive_message(
             QueueUrl=queue_url,
             AttributeNames=[
@@ -25,7 +26,8 @@ while True:
             WaitTimeSeconds=2
         )
 
-        message = response['Messages'][0]
+        message = json.loads(response['Messages'][0]['Body'])
+        print('Message received: {}'.format(message))
         metadata = json.loads(message['NotificationMetadata'])
         lifecycle_hook_name = message['LifecycleHookName']
         autoscaling_group_name = metadata['asgName']
@@ -50,5 +52,5 @@ while True:
             LifecycleActionToken=message['LifecycleActionToken']
         )
         break
-    except KeyError:
-        print("No SQS Messages yet...")
+    except KeyError as e:
+        print('KeyError, potentially expected? :: {}'.format(e))

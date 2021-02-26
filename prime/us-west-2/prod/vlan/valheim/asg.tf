@@ -30,7 +30,7 @@ resource "aws_autoscaling_group" "game" {
 resource "aws_autoscaling_lifecycle_hook" "game" {
   name                   = "${var.game}-${var.game_type}-terminate"
   autoscaling_group_name = aws_autoscaling_group.game.name
-  default_result         = "ABANDON"
+  default_result         = "CONTINUE"
   heartbeat_timeout      = 3600
   lifecycle_transition   = "autoscaling:EC2_INSTANCE_TERMINATING"
   notification_metadata = <<EOF
