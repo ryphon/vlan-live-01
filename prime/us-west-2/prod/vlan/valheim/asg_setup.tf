@@ -48,6 +48,7 @@ aws s3 cp s3://${aws_s3_bucket.worlds.id}/${var.game_type}/latest.tar.gz .
 tar -xzvf latest.tar.gz
 rm latest.tar.gz
 set +e
+rm /root/gp3/valheim/config/backups/*
 (
   docker run -i \
     -p 2456-2458:2456-2458/udp \
