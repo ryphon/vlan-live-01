@@ -66,7 +66,7 @@ while True:
         resp = asg.complete_lifecycle_action(
             LifecycleHookName=lifecycle_hook_name,
             AutoScalingGroupName=autoscaling_group_name,
-            LifecycleActionResult='COMPLETE',
+            LifecycleActionResult='CONTINUE',
             LifecycleActionToken=lifecycleToken
         )
 
