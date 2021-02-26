@@ -45,6 +45,13 @@ resource "aws_iam_policy" "game" {
     {
       "Effect": "Allow",
       "Action": [
+        "autoscaling:CompleteLifecycleAction"
+      ],
+      "Resource": "${aws_autoscaling_group.game.arn}"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
           "s3:ListAllMyBuckets",
           "s3:ListBucket",
           "s3:HeadBucket"
@@ -74,7 +81,7 @@ resource "aws_iam_policy" "game" {
           "route53:ChangeResourceRecordSets"
       ],
       "Resource": [
-          "arn:aws:route53:::hostedzone/Z3OPAVCB13L0BG"
+          "arn:aws:route53:::hostedzone/${data.terraform_remote_state.route53.outputs.hosted_zone_id}"
       ]
     }
   ]
