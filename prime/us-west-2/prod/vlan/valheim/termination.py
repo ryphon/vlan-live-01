@@ -1,4 +1,5 @@
 import time
+import os
 import sys
 import json
 import docker
@@ -8,8 +9,9 @@ sqs = boto3.client('sqs')
 asg = boto3.client('autoscaling')
 docker_client = docker.from_env()
 
-queue_url = 'https://sqs.us-west-2.amazonaws.com/456410706824/valheim-default-lifecycle'
+backup_queue_url = 'https://sqs.us-west-2.amazonaws.com/456410706824/valheim-default-lifecycle'
 # frustrating to hard code this, idk about this quite yet
+queue_url = os.environ.get('SQS_QUEUE_URL', '')
 while True:
     try:
         response = sqs.receive_message(

@@ -12,6 +12,8 @@ data "template_file" "game" {
   template = <<EOF
 #!/bin/bash
 set -ex
+export AWS_REGION=${var.aws_region}
+export SQS_QUEUE_URL=${aws_sqs_queue.game.id}
 yum update -y
 yum install -y git \
                docker \
@@ -45,6 +47,7 @@ cd /
 aws s3 cp s3://${aws_s3_bucket.worlds.id}/${var.game_type}/latest.tar.gz .
 tar -xzvf latest.tar.gz
 rm latest.tar.gz
+set +e
 (
   docker run -i \
     -p 2456-2458:2456-2458/udp \
@@ -55,6 +58,7 @@ rm latest.tar.gz
     -e SERVER_PASS="${var.server_password}" \
     ${var.image}
 )
+set -e
 tar -czvf "latest.tar.gz" "/root/gp3/valheim"
 aws s3 cp "latest.tar.gz" "s3://${aws_s3_bucket.worlds.id}/${var.game_type}/latest.tar.gz"
 DATE=`date +%H-%M--%m-%d-%y`
