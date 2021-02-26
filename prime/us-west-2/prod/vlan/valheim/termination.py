@@ -4,14 +4,14 @@ import sys
 import json
 import docker
 import boto3
-
-sqs = boto3.client('sqs')
-asg = boto3.client('autoscaling')
+region = os.environ.get('AWS_REGION', 'us-west-2')
+sqs = boto3.client('sqs', region_name=region)
+asg = boto3.client('autoscaling', region_name=region)
 docker_client = docker.from_env()
 
-backup_queue_url = 'https://sqs.us-west-2.amazonaws.com/456410706824/valheim-default-lifecycle'
+backup_queue_url = 'https://sqs.{}.amazonaws.com/456410706824/valheim-default-lifecycle'.format(region)
 # frustrating to hard code this, idk about this quite yet
-queue_url = os.environ.get('SQS_QUEUE_URL', '')
+queue_url = os.environ.get('SQS_QUEUE_URL', backup_queue_url)
 while True:
     try:
         response = sqs.receive_message(
@@ -50,10 +50,11 @@ while True:
 
         # wait for init_script to back up the world as it is after the stop
         print('Waiting for final save efforts.')
-        time.sleep(30)
+        time.sleep(20)
 
+        print('Complete Lifecycle now.')
         # now you can allow the instance to die
-        response = asg.complete_lifecycle_action(
+        asg.complete_lifecycle_action(
             LifecycleHookName=lifecycle_hook_name,
             AutoScalingGroupName=autoscaling_group_name,
             LifecycleActionResult='COMPLETE',
@@ -61,8 +62,9 @@ while True:
         )
 
         # ur gonna die anyway LUL
-        print('Were done!')
+        print('We\'re done!')
         sys.exit(0)
+        break
     except KeyError:
         pass
     except IndexError:
