@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import time
 import os
 import sys
@@ -14,6 +15,7 @@ backup_queue_url = 'https://sqs.{}.amazonaws.com/456410706824/valheim-default-li
 queue_url = os.environ.get('SQS_QUEUE_URL', backup_queue_url)
 while True:
     try:
+        print('Rx')
         response = sqs.receive_message(
             QueueUrl=queue_url,
             AttributeNames=[
@@ -66,14 +68,5 @@ while True:
         sys.exit(0)
         break
     except KeyError:
+        print('No RX')
         pass
-    except IndexError:
-        # assume something went wrong with docker, let the instance die naturally
-        time.sleep(10)
-        response = asg.complete_lifecycle_action(
-            LifecycleHookName=lifecycle_hook_name,
-            AutoScalingGroupName=autoscaling_group_name,
-            LifecycleActionResult='COMPLETE',
-            LifecycleActionToken=message['LifecycleActionToken']
-        )
-        sys.exit(0)

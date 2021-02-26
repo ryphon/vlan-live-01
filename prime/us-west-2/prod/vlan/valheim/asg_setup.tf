@@ -24,7 +24,7 @@ yum install -y git \
 sudo systemctl start docker
 python3 -m pip install docker boto3
 wget https://raw.githubusercontent.com/ryphon/vlan-live-01/main/prime/us-west-2/prod/vlan/${var.game}/termination.py -O termination.py
-python3 termination.py &
+nohup python3 -u termination.py > /root/termlog.log &
 IPV4=$(curl 169.254.169.254/latest/meta-data/public-ipv4)
 aws route53 change-resource-record-sets --hosted-zone-id ${data.terraform_remote_state.route53.outputs.hosted_zone_id} --change-batch "{
    \"Changes\":[
@@ -71,6 +71,8 @@ resource "aws_launch_template" "game" {
   name = "${var.game}-${var.game_type}"
   image_id = data.aws_ami.base_ami.id
   instance_type = var.instance_type
+
+  key_name = aws_key_pair.key.id
 
   network_interfaces {
     associate_public_ip_address = true
