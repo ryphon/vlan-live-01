@@ -34,11 +34,7 @@ resource "aws_autoscaling_lifecycle_hook" "game" {
   heartbeat_timeout      = 3600
   lifecycle_transition   = "autoscaling:EC2_INSTANCE_TERMINATING"
   notification_metadata = <<EOF
-{
-  "game": ${var.game},
-  "gameType": ${var.game_type},
-  "asgName": ${aws_autoscaling_group.game.id}
-}
+{"game": ${var.game}, "gameType": ${var.game_type}, "asgName": ${aws_autoscaling_group.game.id}}
 EOF
   notification_target_arn = aws_sqs_queue.game.arn
   role_arn                = aws_iam_role.game.arn
