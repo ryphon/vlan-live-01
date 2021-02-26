@@ -37,7 +37,25 @@ aws route53 change-resource-record-sets --hosted-zone-id ${data.terraform_remote
       }
    ]
 }"
-echo "WTF DO I DO"
+cd /
+aws s3 cp s3://${aws_s3_bucket.worlds.id}/${var.game_type}/latest.tar.gz .
+tar -xzvf latest.tar.gz
+rm latest.tar.gz
+(
+  docker run -i \
+    -p 2456-2458:2456-2458/udp \
+    -p 2456-2458:2456-2458/tcp \
+    -v /root/gp3/valheim/config:/config \
+    -e SERVER_NAME="vlan-${var.game}-${var.game_type}" \
+    -e WORLD_NAME="${var.world_name}" \
+    -e SERVER_PASS="${var.server_password}" \
+    ${var.image}
+)
+tar -czvf "latest.tar.gz" "/root/gp3/valheim"
+aws s3 cp "latest.tar.gz" "s3://${aws_s3_bucket.worlds.id}/${var.game_type}/latest.tar.gz"
+DATE=`date +%H-%M--%m-%d-%y`
+mv "latest.tar.gz" "$DATE.tar.gz"
+aws s3 cp "$DATE.tar.gz" "s3://${aws_s3_bucket.worlds.id}/${var.game_type}/archive/$DATE.tar.gz"
 EOF
 }
 
@@ -45,13 +63,20 @@ resource "aws_launch_template" "game" {
   name = "${var.game}-${var.game_type}"
   image_id = data.aws_ami.base_ami.id
   instance_type = var.instance_type
+
+  network_interfaces {
+    associate_public_ip_address = true
+    security_groups = [aws_security_group.game.id]
+  }
+
   update_default_version = true
+
   iam_instance_profile {
     name = aws_iam_instance_profile.game.name
   }
 
   block_device_mappings {
-    device_name = "/dev/sda1"
+    device_name = "/dev/xvda"
 
     ebs {
       volume_size = 30
@@ -71,9 +96,6 @@ resource "aws_launch_template" "game" {
   lifecycle {
     create_before_destroy = true
   }
-  vpc_security_group_ids = [
-    aws_security_group.game.id,
-  ]
   user_data = base64encode(data.template_file.game.rendered)
 }
 

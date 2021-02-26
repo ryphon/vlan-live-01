@@ -33,3 +33,11 @@ variable "instance_type" {
 variable "image" {
   type = string
 }
+
+variable "world_name" {
+  type = string
+}
+
+variable "server_password" {
+  type = string
+}

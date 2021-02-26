@@ -60,7 +60,8 @@ resource "aws_iam_policy" "game" {
               "s3:DeleteObject"
           ],
           "Resource": [
-              "arn:aws:s3:::${var.game}*/*"
+            "arn:aws:s3:::vlan-${var.game}-${var.game_type}-backup",
+            "arn:aws:s3:::vlan-${var.game}-${var.game_type}-backup/*"
           ]
       },
       {
