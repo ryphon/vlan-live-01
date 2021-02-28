@@ -50,6 +50,17 @@ resource "aws_launch_template" "game" {
     name = aws_iam_instance_profile.game.name
   }
   tags = var.tags
+  key_name = aws_key_pair.key.id
+  block_device_mappings {
+    device_name = "/dev/xvda"
+
+    ebs {
+      volume_size = 20
+      volume_type = "gp3"
+      throughput = 125
+    }
+  }
+
   tag_specifications {
     resource_type = "volume"
     tags = var.tags
