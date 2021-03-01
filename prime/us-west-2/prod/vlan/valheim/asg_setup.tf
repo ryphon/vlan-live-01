@@ -57,6 +57,11 @@ rm /root/gp3/valheim/config/backups/*
     -e SERVER_NAME="vlan-${var.game}-${var.game_type}" \
     -e WORLD_NAME="${var.world_name}" \
     -e SERVER_PASS="${var.server_password}" \
+    -e VALHEIM_PLUS=true \
+    -e VPCFG_Server_enabled=true \
+    -e VPCFG_Server_enforceMod=false \
+    -e VPCFG_Server_dataRate=6000 \
+    -e VPCFG_Server_maxPlayers=12 \
     ${var.image}
 )
 set -e
