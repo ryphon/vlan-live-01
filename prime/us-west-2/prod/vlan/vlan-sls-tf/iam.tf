@@ -63,12 +63,22 @@ resource "aws_iam_policy" "sls" {
         "Resource": "*"
     },
     {
+      "Effect": "Allow",  
+      "Action": [
+        "kms:*"
+      ],
+      "Resource": [
+        "${aws_kms_key.jwt.arn}"
+      ]
+    },
+    {
       "Effect": "Allow",
       "Action": [
         "ssm:GetParameter"
       ],
       "Resource": [
-        "${aws_ssm_parameter.asg.arn}"
+        "${aws_ssm_parameter.asg.arn}",
+        "${aws_ssm_parameter.jwt.arn}"
       ]
     }
   ]

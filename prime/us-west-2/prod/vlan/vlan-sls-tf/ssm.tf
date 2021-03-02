@@ -9,3 +9,31 @@ resource "aws_ssm_parameter" "asg" {
     var.tags,
   )
 }
+
+resource "aws_kms_key" "jwt" {
+  description = "vlan-sls kms key"
+  tags = merge(
+    {
+      "Name" = "vlan-sls"
+    },
+    var.tags,
+  )
+}
+
+resource "aws_kms_alias" "jwt" {
+  name_prefix   = "alias/vlan-sls-"
+  target_key_id = aws_kms_key.jwt.key_id
+}
+
+resource "aws_ssm_parameter" "jwt" {
+  name      = "firebase_secrets"
+  type      = "SecureString"
+  value     = file("./service-account.json")
+  key_id    = aws_kms_key.jwt.id
+  tags = merge(
+    {
+      "Name" = "firebase_secrets"
+    },
+    var.tags,
+  )
+}
