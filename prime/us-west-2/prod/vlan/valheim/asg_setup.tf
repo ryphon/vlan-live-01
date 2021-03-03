@@ -20,9 +20,11 @@ yum install -y git \
                aws-cli \
                htop \
                vim \
-               python3
+               python3 \
+               gcc-c++
 sudo systemctl start docker
-python3 -m pip install docker boto3
+python3 -m pip install pip --upgrade
+python3 -m pip install docker boto3 python-valve firebase_admin
 wget https://raw.githubusercontent.com/ryphon/vlan-live-01/main/prime/us-west-2/prod/vlan/${var.game}/termination.py -O termination.py
 nohup python3 -u termination.py > /root/termlog.log &
 IPV4=$(curl 169.254.169.254/latest/meta-data/public-ipv4)

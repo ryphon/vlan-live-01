@@ -43,6 +43,24 @@ resource "aws_iam_policy" "game" {
   "Version": "2012-10-17",
   "Statement": [
     {
+      "Effect": "Allow",  
+      "Action": [
+        "kms:*"
+      ],
+      "Resource": [
+        "${data.terraform_remote_state.vlan-sls.outputs.firebase_key}"
+      ]
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ssm:GetParameter"
+      ],
+      "Resource": [
+        "${data.terraform_remote_state.vlan-sls.outputs.firebase_arn}"
+      ]
+    },
+    {
       "Effect": "Allow",
       "Action": [
         "autoscaling:CompleteLifecycleAction"
