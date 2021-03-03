@@ -26,7 +26,7 @@ sudo systemctl start docker
 python3 -m pip install pip --upgrade
 python3 -m pip install docker boto3 python-valve firebase_admin
 wget https://raw.githubusercontent.com/ryphon/vlan-live-01/main/prime/us-west-2/prod/vlan/${var.game}/termination.py -O termination.py
-wget https://raw.githubusercontent.com/ryphon/vlan-live-01/main/prime/us-west-2/prod/vlan/${var.game}/running.py -O running.py
+wget https://raw.githubusercontent.com/ryphon/vlan-live-01/main/prime/us-west-2/prod/vlan/running.py -O running.py
 nohup python3 -u termination.py > /root/termlog.log &
 nohup python3 -u running.py --serverAddress localhost --serverPort 2457 --game "${var.game}" --gameType "${var.game_type}" > /root/runlog.log &
 IPV4=$(curl 169.254.169.254/latest/meta-data/public-ipv4)
