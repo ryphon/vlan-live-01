@@ -3,6 +3,7 @@ import os
 import argparse
 import json
 import boto3
+import requests
 import firebase_admin
 from firebase_admin import credentials, firestore
 import valve.source.a2s
@@ -18,6 +19,8 @@ def main():
     parser.add_argument('--game', type=str)
     parser.add_argument('--gameType', type=str)
     args = parser.parse_args()
+
+    ip = requests.get('http://169.254.169.254/latest/meta-data/public-ipv4').text
 
     SERVER_ADDRESS = (args.serverAddress, args.serverPort)
     # server.info().values = {'response_type': 73, 'protocol': 17, 'server_name': "Garry's Mod", 'map': 'ttt_dolls', 'folder': 'garrysmod', 'game': 'TTT2 (Advanced Update)', 'app_id': 4000, 'player_count': 0, 'max_players': 16, 'bot_count': 0, 'server_type': <ServerType 100 'Dedicated'>, 'platform': <Platform 108 'Linux'>, 'password_protected': 0, 'vac_enabled': 1, 'version': '2020.03.17'}
@@ -39,7 +42,8 @@ def main():
                 store.document(f'games/{args.game}').set({
                     f'{args.gameType}': {
                         'started': True,
-                        'ready': True
+                        'ready': True,
+                        'ipAddress': ip
                     }
                 }, merge=True)
                 break
