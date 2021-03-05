@@ -44,9 +44,11 @@ while True:
         )
 
         # docker shutdown then wait 10s
-        print('Docker shutdown.')
+        print('Docker list.')
         containers = docker_client.containers.list()
-        containers[0].stop()
+        print('Docker stop.')
+        for container in containers:
+            container.stop(timeout=10)
 
         # wait for init_script to back up the world as it is after the stop
         print('Waiting for final save efforts.')
@@ -67,3 +69,5 @@ while True:
         break
     except KeyError:
         pass
+    except docker.errors.APIError as e:
+        print("Docker Api Error: {}".format(e))
