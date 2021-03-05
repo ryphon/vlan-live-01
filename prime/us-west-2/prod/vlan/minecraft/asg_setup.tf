@@ -79,6 +79,8 @@ resource "aws_launch_template" "game" {
     name = aws_iam_instance_profile.game.name
   }
 
+  key_name = aws_key_pair.key.id
+
   block_device_mappings {
     device_name = "/dev/sda1"
 
