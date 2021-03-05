@@ -25,7 +25,7 @@ while True:
             MessageAttributeNames=[
                 'All'
             ],
-            VisibilityTimeout=15,
+            VisibilityTimeout=40,
             WaitTimeSeconds=2
         )
         message = response['Messages'][0]
@@ -37,13 +37,7 @@ while True:
         lifecycle_hook_name = message_body['LifecycleHookName']
         autoscaling_group_name = metadata['asgName']
 
-        # Delete the message once I receive
-        sqs.delete_message(
-            QueueUrl=queue_url,
-            ReceiptHandle=receipt_handle
-        )
-
-        # docker shutdown then wait 10s
+        # Docker shutdown then wait 10s
         print('Docker list.')
         containers = docker_client.containers.list()
         print('Docker stop.')
@@ -53,6 +47,13 @@ while True:
         # wait for init_script to back up the world as it is after the stop
         print('Waiting for final save efforts.')
         time.sleep(20)
+
+        # Delete the message once I receive
+        print('Deleting SQS Message now')
+        sqs.delete_message(
+            QueueUrl=queue_url,
+            ReceiptHandle=receipt_handle
+        )
 
         print('Complete Lifecycle now.')
         # now you can allow the instance to die
