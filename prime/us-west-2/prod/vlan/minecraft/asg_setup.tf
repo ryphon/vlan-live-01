@@ -56,8 +56,8 @@ set +e
 (
   docker run -i \
     -p 25565:25565 \
-    -e EULA=TRUE
-    -v /etc/timezone:/etc/timezone:ro
+    -e EULA=TRUE \
+    -v /etc/timezone:/etc/timezone:ro \
     -v /root/gp3/${var.game}:/data \
     ${var.image}
 )

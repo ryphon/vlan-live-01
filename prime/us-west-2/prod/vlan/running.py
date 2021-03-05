@@ -43,27 +43,28 @@ def main():
     ip = requests.get('http://169.254.169.254/latest/meta-data/public-ipv4').text
 
     while True:
-        try:
-            if args.game in ('soldat', 'gmod', 'valheim'):
+        if args.game in ('soldat', 'gmod', 'valheim'):
+            import valve.source.a2s
+            from valve.source import NoResponseError
+            try:
                 SERVER_ADDRESS = (args.serverAddress, args.serverPort)
-                import valve.source.a2s
-                from valve.source import NoResponseError
                 with valve.source.a2s.ServerQuerier(SERVER_ADDRESS) as server:
                     server.info()
                     # need to genericize this
                     documentStore(args.game, args.gameType, args.name, ip)
                     break
-            elif args.game == 'minecraft':
+            except NoResponseError:
+                print('No response yet!')
+        elif args.game == 'minecraft':
+            from mcstatus import MinecraftServer
+            try:
                 SERVER_ADDRESS = [args.serverAddress, args.serverPort]
-                from mcstatus import MinecraftServer
                 server = MinecraftServer(SERVER_ADDRESS[0], SERVER_ADDRESS[1])
                 server.ping()
                 documentStore(args.game, args.gameType, args.name, ip)
                 break
-        except NoResponseError:
-            print('No response yet!')
-        except Exception as e:
-            print('No response yet! However, {}'.format(e))
+            except Exception as e:
+                print('No response yet! However, {}'.format(e))
 
 
 if __name__ == '__main__':
