@@ -14,6 +14,7 @@ inputs = {
   dns_zone = "itisamystery.com"
   game = "valheim"
   game_type = "default"
+  game_name = "Modless"
   game_type_short = "def"
   instance_type = "t3.xlarge"
   tags = {

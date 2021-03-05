@@ -14,6 +14,7 @@ inputs = {
   dns_zone = "itisamystery.com"
   game = "gmod"
   game_type = "deathrun"
+  game_name = "Deathrun"
   game_type_short = "dr"
   instance_type = "t3.small"
   workshop_collection = "2227527602"

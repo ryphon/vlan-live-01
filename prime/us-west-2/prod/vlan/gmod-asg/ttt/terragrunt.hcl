@@ -14,6 +14,7 @@ inputs = {
   dns_zone = "itisamystery.com"
   game = "gmod"
   game_type = "terrortown"
+  game_name = "Trouble in Terrorist Town"
   game_type_short = "ttt"
   instance_type = "t3.small"
   workshop_collection = "2091507172"

@@ -18,6 +18,7 @@ def main():
     parser.add_argument('--serverPort', type=int)
     parser.add_argument('--game', type=str)
     parser.add_argument('--gameType', type=str)
+    parser.add_argument('--name', type=str)
     args = parser.parse_args()
 
     ip = requests.get('http://169.254.169.254/latest/meta-data/public-ipv4').text
@@ -40,6 +41,7 @@ def main():
                 # need to genericize this
                 store.document(f'games/{args.game}').set({
                     f'{args.gameType}': {
+                        'name': args.gameName,
                         'started': True,
                         'ready': True,
                         'ipAddress': ip

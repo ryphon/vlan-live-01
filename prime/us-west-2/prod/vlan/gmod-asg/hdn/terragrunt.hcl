@@ -14,6 +14,7 @@ inputs = {
   dns_zone = "itisamystery.com"
   game = "gmod"
   game_type = "thehidden"
+  game_name = "The Hidden"
   game_type_short = "hdn"
   instance_type = "t3.small"
   workshop_collection = "2091506439"
