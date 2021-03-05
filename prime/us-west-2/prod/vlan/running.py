@@ -41,7 +41,7 @@ def main():
                 # need to genericize this
                 store.document(f'games/{args.game}').set({
                     f'{args.gameType}': {
-                        'name': args.gameName,
+                        'name': args.name,
                         'started': True,
                         'ready': True,
                         'ipAddress': ip
