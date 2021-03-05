@@ -6,12 +6,31 @@ import boto3
 import requests
 import firebase_admin
 from firebase_admin import credentials, firestore
-import valve.source.a2s
-from valve.source import NoResponseError
+
+
+def documentStore(game, gameType, name, ip):
+    region = os.environ.get('AWS_REGION', 'us-west-2')
+    ssm = boto3.client('ssm', region_name=region)
+    cert = json.loads(ssm.get_parameter(Name='firebase_secrets', WithDecryption=True)['Parameter']['Value'])
+
+    firebase_creds = credentials.Certificate(cert)
+    if not firebase_admin._apps:
+        firebase_app = firebase_admin.initialize_app(firebase_creds)
+    else:
+        firebase_app = firebase_admin.get_app()
+    store = firestore.client(firebase_app)
+
+    store.document(f'games/{game}').set({
+        f'{gameType}': {
+            'name': name,
+            'started': True,
+            'ready': True,
+            'ipAddress': ip
+        }
+    }, merge=True)
 
 
 def main():
-    region = os.environ.get('AWS_REGION', 'us-west-2')
 
     parser = argparse.ArgumentParser(description='arguments')
     parser.add_argument('--serverAddress', type=str)
@@ -23,33 +42,28 @@ def main():
 
     ip = requests.get('http://169.254.169.254/latest/meta-data/public-ipv4').text
 
-    SERVER_ADDRESS = (args.serverAddress, args.serverPort)
-    ssm = boto3.client('ssm', region_name=region)
-    cert = json.loads(ssm.get_parameter(Name='firebase_secrets', WithDecryption=True)['Parameter']['Value'])
-
-    firebase_creds = credentials.Certificate(cert)
-    if not firebase_admin._apps:
-        firebase_app = firebase_admin.initialize_app(firebase_creds)
-    else:
-        firebase_app = firebase_admin.get_app()
-    store = firestore.client(firebase_app)
-
     while True:
         try:
-            with valve.source.a2s.ServerQuerier(SERVER_ADDRESS) as server:
-                server.info()
-                # need to genericize this
-                store.document(f'games/{args.game}').set({
-                    f'{args.gameType}': {
-                        'name': args.name,
-                        'started': True,
-                        'ready': True,
-                        'ipAddress': ip
-                    }
-                }, merge=True)
+            if args.game in ('soldat', 'gmod', 'valheim'):
+                SERVER_ADDRESS = (args.serverAddress, args.serverPort)
+                import valve.source.a2s
+                from valve.source import NoResponseError
+                with valve.source.a2s.ServerQuerier(SERVER_ADDRESS) as server:
+                    server.info()
+                    # need to genericize this
+                    documentStore(args.game, args.gameType, args.name, ip)
+                    break
+            elif args.game == 'minecraft':
+                SERVER_ADDRESS = [args.serverAddress, args.serverPort]
+                from mcstatus import MinecraftServer
+                server = MinecraftServer(SERVER_ADDRESS[0], SERVER_ADDRESS[1])
+                server.ping()
+                documentStore(args.game, args.gameType, args.name, ip)
                 break
         except NoResponseError:
             print('No response yet!')
+        except Exception as e:
+            print('No response yet! However, {}'.format(e))
 
 
 if __name__ == '__main__':

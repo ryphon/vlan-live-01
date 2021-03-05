@@ -18,6 +18,10 @@ variable "game_type" {
   type = string
 }
 
+variable "game_name" {
+  type = string
+}
+
 variable "game_type_short" {
   type = string
 }

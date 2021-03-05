@@ -12,14 +12,25 @@ data "template_file" "game" {
   template = <<EOF
 #!/bin/bash
 set -ex
+export AWS_REGION=${var.aws_region}
+export SQS_QUEUE_URL=${aws_sqs_queue.game.id}
 yum update -y
 yum install -y git \
                docker \
                aws-cli \
                htop \
-               vim
+               vim \
+               python3 \
+               gcc-c++
 sudo systemctl start docker
 IPV4=$(curl 169.254.169.254/latest/meta-data/public-ipv4)
+python3 -m pip install pip --upgrade
+python3 -m pip install docker boto3 python-valve firebase_admin
+wget https://raw.githubusercontent.com/ryphon/vlan-live-01/main/prime/us-west-2/prod/vlan/${var.game}/termination.py -O termination.py
+wget https://raw.githubusercontent.com/ryphon/vlan-live-01/main/prime/us-west-2/prod/vlan/running.py -O running.py
+nohup python3 -u termination.py > /root/termlog.log &
+nohup python3 -u running.py --serverAddress $IPV4 --serverPort 25565 --game "${var.game}" --gameType "${var.game_type}" --name "${var.game_name}"> /root/runlog.log &
+sudo systemctl start docker
 aws route53 change-resource-record-sets --hosted-zone-id ${data.terraform_remote_state.route53.outputs.hosted_zone_id} --change-batch "{
    \"Changes\":[
       {
@@ -37,7 +48,25 @@ aws route53 change-resource-record-sets --hosted-zone-id ${data.terraform_remote
       }
    ]
 }"
-echo WTF DO I DO
+cd /
+aws s3 cp s3://${aws_s3_bucket.worlds.id}/${var.game_type}/latest.tar.gz .
+tar -xzvf latest.tar.gz
+rm latest.tar.gz
+set +e
+(
+  docker run -i \
+    -p 25565:25565 \
+    -e EULA=TRUE
+    -v /etc/timezone:/etc/timezone:ro
+    -v /root/gp3/${var.game}:/data \
+    ${var.image}
+)
+set -e
+tar -czvf "latest.tar.gz" "/root/gp3/${var.game}"
+aws s3 cp "latest.tar.gz" "s3://${aws_s3_bucket.worlds.id}/${var.game_type}/latest.tar.gz"
+DATE=`date +%H-%M--%m-%d-%y`
+mv "latest.tar.gz" "$DATE.tar.gz"
+aws s3 cp "$DATE.tar.gz" "s3://${aws_s3_bucket.worlds.id}/${var.game_type}/archive/$DATE.tar.gz"
 EOF
 }
 
