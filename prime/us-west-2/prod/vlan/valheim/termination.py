@@ -25,7 +25,7 @@ while True:
             MessageAttributeNames=[
                 'All'
             ],
-            VisibilityTimeout=40,
+            VisibilityTimeout=60,
             WaitTimeSeconds=2
         )
         message = response['Messages'][0]
