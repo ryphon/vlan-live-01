@@ -25,7 +25,7 @@ yum install -y git \
 sudo systemctl start docker
 IPV4=$(curl 169.254.169.254/latest/meta-data/public-ipv4)
 python3 -m pip install pip --upgrade
-python3 -m pip install docker boto3 python-valve firebase_admin
+python3 -m pip install docker boto3 firebase_admin mcstatus
 wget https://raw.githubusercontent.com/ryphon/vlan-live-01/main/prime/us-west-2/prod/vlan/${var.game}/termination.py -O termination.py
 wget https://raw.githubusercontent.com/ryphon/vlan-live-01/main/prime/us-west-2/prod/vlan/running.py -O running.py
 nohup python3 -u termination.py > /root/termlog.log &

@@ -64,7 +64,8 @@ rm /root/gp3/valheim/config/backups/*
     -e VALHEIM_PLUS=true \
     -e VPCFG_Server_enabled=true \
     -e VPCFG_Server_enforceMod=false \
-    -e VPCFG_Server_dataRate=60 \
+    -e VPCFG_Server_maxPlayers=12 \
+    -e VPCFG_Server_dataRate=120 \
     ${var.image}
 )
 set -e
