@@ -63,9 +63,40 @@ rm /root/gp3/valheim/config/backups/*
     -e SERVER_PASS="${var.server_password}" \
     -e VALHEIM_PLUS=true \
     -e VPCFG_Server_enabled=true \
-    -e VPCFG_Server_enforceMod=false \
+    -e VPCFG_Server_enforceMod=true \
     -e VPCFG_Server_maxPlayers=12 \
     -e VPCFG_Server_dataRate=120 \
+    -e VPCFG_Building_enabled=true \
+    -e VPCFG_Building_maximumPlacementDIstance=10 \
+    -e VPCFG_Fermenter_enabled=true \
+    -e VPCFG_Fermenter_showFermenterDuration=true \
+    -e VPCFG_Fireplace_enabled=true \
+    -e VPCFG_Furnace_enabled=true \
+    -e VPCFG_Furnace_maximumOre=30 \
+    -e VPCFG_Furnace_maximumCoal=50 \
+    -e VPCFG_Furnace_autoDeposit=true \
+    -e VPCFG_Furnace_autoDepositRange=2 \
+    -e VPCFG_Items_enabled=true \
+    -e VPCFG_Items_itemStackMultiplier=50 \
+    -e VPCFG_Hud_enabled=true \
+    -e VPCFG_Hud_experienceGainedNotifications=true \
+    -e VPCFG_Kiln_enabled=true \
+    -e VPCFG_Kiln_maximumWood=50 \
+    -e VPCFG_Kiln_autoDeposit=true \
+    -e VPCFG_Kiln_autoDepositRange=2 \
+    -e VPCFG_Map_enabled=true \
+    -e VPCFG_Map_shareMapProgression=true \
+    -e VPCFG_Map_preventPlayerFromTurningOffPublicPosition=true \
+    -e VPCFG_Player_enabled=true \
+    -e VPCFG_Player_baseUnarmedDamage=240 \
+    -e VPCFG_StructuralIntegrity_enabled=true \
+    -e VPCFG_StructuralIntegrity_wood=20 \
+    -e VPCFG_StructuralIntegrity_stone=20 \
+    -e VPCFG_StructuralIntegrity_iron=20 \
+    -e VPCFG_StructuralIntegrity_hardWood=20 \
+    -e VPCFG_Stamina_enabled=true \
+    -e VPCFG_Stamina_sneakStaminaDrain=-50 \
+    -e VPCFG_Stamina_swimStaminaDrain=-50 \
     ${var.image}
 )
 set -e

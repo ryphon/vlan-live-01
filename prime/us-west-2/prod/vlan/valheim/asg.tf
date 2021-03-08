@@ -2,9 +2,6 @@ resource "aws_autoscaling_group" "game" {
   name = aws_launch_template.game.name
   max_size = 1
   desired_capacity = 0
-  lifecycle {
-    ignore_changes = desired_capacity
-  }
   min_size = 0
   force_delete = true
   vpc_zone_identifier = [
@@ -27,6 +24,7 @@ resource "aws_autoscaling_group" "game" {
   )
   lifecycle {
     create_before_destroy = true
+    ignore_changes = [desired_capacity]
   }
 }
 
