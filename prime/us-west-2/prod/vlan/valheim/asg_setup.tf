@@ -75,7 +75,7 @@ rm /root/gp3/valheim/config/backups/*
     -e VPCFG_Furnace_maximumOre=30 \
     -e VPCFG_Furnace_maximumCoal=50 \
     -e VPCFG_Furnace_autoDeposit=true \
-    -e VPCFG_Furnace_autoDepositRange=2 \
+    -e VPCFG_Furnace_autoDepositRange=5 \
     -e VPCFG_Items_enabled=true \
     -e VPCFG_Items_itemStackMultiplier=50 \
     -e VPCFG_Hud_enabled=true \
@@ -83,7 +83,7 @@ rm /root/gp3/valheim/config/backups/*
     -e VPCFG_Kiln_enabled=true \
     -e VPCFG_Kiln_maximumWood=50 \
     -e VPCFG_Kiln_autoDeposit=true \
-    -e VPCFG_Kiln_autoDepositRange=2 \
+    -e VPCFG_Kiln_autoDepositRange=5 \
     -e VPCFG_Map_enabled=true \
     -e VPCFG_Map_shareMapProgression=true \
     -e VPCFG_Map_preventPlayerFromTurningOffPublicPosition=true \
