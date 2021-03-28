@@ -77,7 +77,6 @@ rm /root/gp3/valheim/config/backups/*
     -e VPCFG_FireSource_enabled=true \
     -e VPCFG_FireSource_torches=true \
     -e VPCFG_FireSource_fires=true \
-    -e VPCFG_FireSource_=true \
     -e VPCFG_Furnace_enabled=true \
     -e VPCFG_Furnace_maximumOre=30 \
     -e VPCFG_Furnace_maximumCoal=50 \
