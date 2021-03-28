@@ -21,7 +21,8 @@ yum install -y git \
                htop \
                vim \
                python3 \
-               gcc-c++
+               gcc-c++ \
+               zstd
 sudo systemctl start docker
 python3 -m pip install pip --upgrade
 python3 -m pip install docker boto3 python-valve firebase_admin
@@ -48,9 +49,9 @@ aws route53 change-resource-record-sets --hosted-zone-id ${data.terraform_remote
    ]
 }"
 cd /
-aws s3 cp s3://${aws_s3_bucket.worlds.id}/${var.game_type}/latest.tar.gz .
-tar -xzvf latest.tar.gz
-rm latest.tar.gz
+aws s3 cp s3://${aws_s3_bucket.worlds.id}/${var.game_type}/latest.tar.zst .
+tar --use-compress-program zstd -xvf latest.tar.zst
+rm latest.tar.zst
 set +e
 rm /root/gp3/valheim/config/backups/*
 (
@@ -66,45 +67,63 @@ rm /root/gp3/valheim/config/backups/*
     -e VPCFG_Server_enforceMod=true \
     -e VPCFG_Server_maxPlayers=12 \
     -e VPCFG_Server_dataRate=120 \
+    -e VPCFG_Server_serverSyncsConfig=true \
     -e VPCFG_Building_enabled=true \
     -e VPCFG_Building_maximumPlacementDIstance=10 \
     -e VPCFG_Fermenter_enabled=true \
     -e VPCFG_Fermenter_showFermenterDuration=true \
-    -e VPCFG_Fireplace_enabled=true \
+    -e VPCFG_Fermenter_autoDeposit=true \
+    -e VPCFG_Fermenter_autoFuel=true \
+    -e VPCFG_FireSource_enabled=true \
+    -e VPCFG_FireSource_torches=true \
+    -e VPCFG_FireSource_fires=true \
+    -e VPCFG_FireSource_=true \
     -e VPCFG_Furnace_enabled=true \
     -e VPCFG_Furnace_maximumOre=30 \
     -e VPCFG_Furnace_maximumCoal=50 \
     -e VPCFG_Furnace_autoDeposit=true \
-    -e VPCFG_Furnace_autoDepositRange=5 \
+    -e VPCFG_Furnace_autoDepositRange=8 \
+    -e VPCFG_Furance_autoFuel=true \
     -e VPCFG_Items_enabled=true \
     -e VPCFG_Items_itemStackMultiplier=50 \
     -e VPCFG_Hud_enabled=true \
     -e VPCFG_Hud_experienceGainedNotifications=true \
     -e VPCFG_Kiln_enabled=true \
+    -e VPCFG_Kiln_dontProcessFineWood=true \
+    -e VPCFG_Kiln_dontProcessRoundLog=true \
     -e VPCFG_Kiln_maximumWood=50 \
     -e VPCFG_Kiln_autoDeposit=true \
-    -e VPCFG_Kiln_autoDepositRange=5 \
+    -e VPCFG_Kiln_autoFuel=true \
+    -e VPCFG_Kiln_autoDepositRange=2 \
     -e VPCFG_Map_enabled=true \
+    -e VPCFG_Map_exploreRadius=150 \
     -e VPCFG_Map_shareMapProgression=true \
     -e VPCFG_Map_preventPlayerFromTurningOffPublicPosition=true \
     -e VPCFG_Player_enabled=true \
     -e VPCFG_Player_baseUnarmedDamage=240 \
+    -e VPCFG_Player_cropNotifier=true \
+    -e VPCFG_Player_autoRepair=true \
+    -e VPCFG_Player_fallDamage=-25 \
+    -e VPCFG_Player_reequipItemsAfterSwimming=true \
     -e VPCFG_StructuralIntegrity_enabled=true \
-    -e VPCFG_StructuralIntegrity_wood=20 \
-    -e VPCFG_StructuralIntegrity_stone=20 \
-    -e VPCFG_StructuralIntegrity_iron=20 \
-    -e VPCFG_StructuralIntegrity_hardWood=20 \
+    -e VPCFG_StructuralIntegrity_wood=25 \
+    -e VPCFG_StructuralIntegrity_stone=25 \
+    -e VPCFG_StructuralIntegrity_iron=25 \
+    -e VPCFG_StructuralIntegrity_hardWood=25 \
+    -e VPCFG_StructuralIntegrity_disableWaterDamageToPlayerBoats=true \
+    -e VPCFG_FirstPerson_enabled=true \
+    -e VPCFG_FirstPerson_defaultFOV=90 \
     -e VPCFG_Stamina_enabled=true \
     -e VPCFG_Stamina_sneakStaminaDrain=-50 \
     -e VPCFG_Stamina_swimStaminaDrain=-50 \
     ${var.image}
 )
 set -e
-tar -czvf "latest.tar.gz" "/root/gp3/valheim"
-aws s3 cp "latest.tar.gz" "s3://${aws_s3_bucket.worlds.id}/${var.game_type}/latest.tar.gz"
+tar --use-compress-program zstd -cvf "latest.tar.zst" "/root/gp3/valheim"
+aws s3 cp "latest.tar.zst" "s3://${aws_s3_bucket.worlds.id}/${var.game_type}/latest.tar.zst"
 DATE=`date +%H-%M--%m-%d-%y`
-mv "latest.tar.gz" "$DATE.tar.gz"
-aws s3 cp "$DATE.tar.gz" "s3://${aws_s3_bucket.worlds.id}/${var.game_type}/archive/$DATE.tar.gz"
+mv "latest.tar.zst" "$DATE.tar.zst"
+aws s3 cp "$DATE.tar.zst" "s3://${aws_s3_bucket.worlds.id}/${var.game_type}/archive/$DATE.tar.zst"
 EOF
 }
 
