@@ -87,3 +87,13 @@ data "terraform_remote_state" "minecraft_default" {
     key    = "prime/${var.aws_region}/prod/vlan/minecraft/default/terraform.tfstate"
   }
 }
+
+data "terraform_remote_state" "minecraft_sf4" {
+  backend = "s3"
+
+  config = {
+    region = var.aws_region
+    bucket = var.tfstate_global_bucket
+    key    = "prime/${var.aws_region}/prod/vlan/minecraft/sf4/terraform.tfstate"
+  }
+}
