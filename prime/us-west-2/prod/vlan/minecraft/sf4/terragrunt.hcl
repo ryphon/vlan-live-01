@@ -11,7 +11,16 @@ include {
 
 # These are the variables we have to pass in to use the module specified in the terragrunt configuration above
 inputs = {
+  dns_zone = "itisamystery.com"
+  game = "minecraft"
+  game_type = "sf4"
+  game_name = "SkyFactory4"
+  game_type_short = "sf4"
+  instance_type = "t3.large"
+  image = "itzg/minecraft-server:java8"
   tags = {
+    Game = "minecraft"
+    GameType = "sf4"
     Env = "prod"
   }
 }

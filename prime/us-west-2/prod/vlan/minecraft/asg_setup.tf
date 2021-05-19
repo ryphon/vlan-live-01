@@ -21,7 +21,8 @@ yum install -y git \
                htop \
                vim \
                python3 \
-               gcc-c++
+               gcc-c++ \
+               zstd
 sudo systemctl start docker
 IPV4=$(curl 169.254.169.254/latest/meta-data/public-ipv4)
 python3 -m pip install pip --upgrade
@@ -49,24 +50,33 @@ aws route53 change-resource-record-sets --hosted-zone-id ${data.terraform_remote
    ]
 }"
 cd /
-aws s3 cp s3://${aws_s3_bucket.worlds.id}/${var.game_type}/latest.tar.gz .
-tar -xzvf latest.tar.gz
-rm latest.tar.gz
+mkfs -t xfs /dev/nvme1n1
+mkdir /root/gp3 && mount /dev/nvme1n1 /root/gp3
+aws s3 cp s3://${aws_s3_bucket.worlds.id}/${var.game_type}/latest.tar.zst .
+tar --use-compress-program zstd -xvf latest.tar.zst
+rm latest.tar.zst
+mkdir /root/gp3/modpacks
+wget "https://media.forgecdn.net/files/3012/800/SkyFactory-4_Server_4.2.2.zip" -P /root/gp3/modpacks
 set +e
 (
   docker run -i \
     -p 25565:25565 \
     -e EULA=TRUE \
+    -e TYPE=CURSEFORGE \
+    -e VERSION=1.12.2
+    -e MEMORY=6G
+    -e CF_SERVER_MOD=/modpacks/SkyFactory-4_Server_4.2.2.zip \
     -v /etc/timezone:/etc/timezone:ro \
     -v /root/gp3/${var.game}:/data \
+    -v /root/gp3/modpacks:/modpacks \
     ${var.image}
 )
 set -e
-tar -czvf "latest.tar.gz" "/root/gp3/${var.game}"
-aws s3 cp "latest.tar.gz" "s3://${aws_s3_bucket.worlds.id}/${var.game_type}/latest.tar.gz"
+tar --use-compress-program zstd -cvf "latest.tar.zst" "/root/gp3/${var.game}"
+aws s3 cp "latest.tar.zst" "s3://${aws_s3_bucket.worlds.id}/${var.game_type}/latest.tar.zst"
 DATE=`date +%H-%M--%m-%d-%y`
-mv "latest.tar.gz" "$DATE.tar.gz"
-aws s3 cp "$DATE.tar.gz" "s3://${aws_s3_bucket.worlds.id}/${var.game_type}/archive/$DATE.tar.gz"
+mv "latest.tar.zst" "$DATE.tar.zst"
+aws s3 cp "$DATE.tar.zst" "s3://${aws_s3_bucket.worlds.id}/${var.game_type}/archive/$DATE.tar.zst"
 EOF
 }
 
