@@ -17,10 +17,10 @@ inputs = {
   game_name = "SkyFactory4"
   game_type_short = "sf4"
   instance_type = "t3.large"
-  image = "itzg/minecraft-server"
+  image = "itzg/minecraft-server:java8"
   tags = {
     Game = "minecraft"
-    GameType = "skyfactory"
+    GameType = "sf4"
     Env = "prod"
   }
 }

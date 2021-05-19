@@ -2,6 +2,7 @@ import sys
 import os
 import argparse
 import json
+import time
 import boto3
 import requests
 import firebase_admin
@@ -54,6 +55,7 @@ def main():
                     documentStore(args.game, args.gameType, args.name, ip)
                     break
             except NoResponseError:
+                time.sleep(5)
                 print('No response yet!')
         elif args.game == 'minecraft':
             from mcstatus import MinecraftServer
@@ -64,6 +66,7 @@ def main():
                 documentStore(args.game, args.gameType, args.name, ip)
                 break
             except Exception as e:
+                time.sleep(5)
                 print('No response yet! However, {}'.format(e))
 
 
