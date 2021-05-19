@@ -56,15 +56,15 @@ aws s3 cp s3://${aws_s3_bucket.worlds.id}/${var.game_type}/latest.tar.zst .
 tar --use-compress-program zstd -xvf latest.tar.zst
 rm latest.tar.zst
 mkdir /root/gp3/modpacks
-wget "https://media.forgecdn.net/files/3012/800/SkyFactory-4_Server_4.2.2.zip" -P /root/gp3/modpacks
+wget -q "https://media.forgecdn.net/files/3012/800/SkyFactory-4_Server_4.2.2.zip" -P /root/gp3/modpacks
 set +e
 (
   docker run -i \
     -p 25565:25565 \
     -e EULA=TRUE \
     -e TYPE=CURSEFORGE \
-    -e VERSION=1.12.2
-    -e MEMORY=6G
+    -e VERSION=1.12.2 \
+    -e MEMORY=6G \
     -e CF_SERVER_MOD=/modpacks/SkyFactory-4_Server_4.2.2.zip \
     -v /etc/timezone:/etc/timezone:ro \
     -v /root/gp3/${var.game}:/data \

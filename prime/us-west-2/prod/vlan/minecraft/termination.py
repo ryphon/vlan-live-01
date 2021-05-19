@@ -46,7 +46,7 @@ while True:
 
         # wait for init_script to back up the world as it is after the stop
         print('Waiting for final save efforts.')
-        time.sleep(20)
+        time.sleep(60)
 
         # Delete the message once I receive
         print('Deleting SQS Message now')
