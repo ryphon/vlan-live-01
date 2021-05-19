@@ -65,6 +65,7 @@ set +e
     -e TYPE=CURSEFORGE \
     -e VERSION=1.12.2 \
     -e MEMORY=6G \
+    -e OPS=Draelyr,Qualenal \
     -e CF_SERVER_MOD=/modpacks/SkyFactory-4_Server_4.2.2.zip \
     -v /etc/timezone:/etc/timezone:ro \
     -v /root/gp3/${var.game}:/data \
