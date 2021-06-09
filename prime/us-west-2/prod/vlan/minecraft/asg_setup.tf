@@ -29,7 +29,7 @@ python3 -m pip install pip --upgrade
 python3 -m pip install docker boto3 firebase_admin mcstatus
 wget https://raw.githubusercontent.com/ryphon/vlan-live-01/main/prime/us-west-2/prod/vlan/${var.game}/termination.py -O termination.py
 wget https://raw.githubusercontent.com/ryphon/vlan-live-01/main/prime/us-west-2/prod/vlan/running.py -O running.py
-nohup python3 -u termination.py > /root/termlog.log &
+nohup python3 -u termination.py "${var.game_type}" > /root/termlog.log &
 nohup python3 -u running.py --serverAddress $IPV4 --serverPort 25565 --game "${var.game}" --gameType "${var.game_type}" --name "${var.game_name}"> /root/runlog.log &
 sudo systemctl start docker
 aws route53 change-resource-record-sets --hosted-zone-id ${data.terraform_remote_state.route53.outputs.hosted_zone_id} --change-batch "{
@@ -52,7 +52,7 @@ aws route53 change-resource-record-sets --hosted-zone-id ${data.terraform_remote
 cd /
 mkfs -t xfs /dev/nvme1n1
 mkdir /root/gp3 && mount /dev/nvme1n1 /root/gp3
-aws s3 cp s3://${aws_s3_bucket.worlds.id}/${var.game_type}/latest.tar.zst .
+aws s3 cp "s3://${aws_s3_bucket.worlds.id}/${var.game_type}/latest.tar.zst" .
 tar --use-compress-program zstd -xvf latest.tar.zst
 rm latest.tar.zst
 set +e
@@ -61,11 +61,9 @@ set +e
     -p 25565:25565 \
     -e EULA=TRUE \
     -e TYPE=SPIGOT \
-    -e VERSION=1.12.2 \
     -e MEMORY=6G \
     -e MAX_TICK_TIME=-1 \
     -e OPS=Draelyr,Qualenal \
-    -v /etc/timezone:/etc/timezone:ro \
     -v /root/gp3/${var.game}:/data \
     ${var.image}
 )
