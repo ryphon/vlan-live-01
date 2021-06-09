@@ -52,7 +52,8 @@ resource "aws_iam_policy" "sls" {
           "${data.terraform_remote_state.soldat_oddball.outputs.asg_arn}",
           "${data.terraform_remote_state.valheim_default.outputs.asg_arn}",
           "${data.terraform_remote_state.minecraft_default.outputs.asg_arn}",
-          "${data.terraform_remote_state.minecraft_sf4.outputs.asg_arn}"
+          "${data.terraform_remote_state.minecraft_sf4.outputs.asg_arn}",
+          "${data.terraform_remote_state.minecraft_qualenal.outputs.asg_arn}"
         ]
     },
     {

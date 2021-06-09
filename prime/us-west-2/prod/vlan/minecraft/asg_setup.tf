@@ -55,25 +55,24 @@ mkdir /root/gp3 && mount /dev/nvme1n1 /root/gp3
 aws s3 cp s3://${aws_s3_bucket.worlds.id}/${var.game_type}/latest.tar.zst .
 tar --use-compress-program zstd -xvf latest.tar.zst
 rm latest.tar.zst
-mkdir /root/gp3/modpacks
-wget -q "https://media.forgecdn.net/files/3012/800/SkyFactory-4_Server_4.2.2.zip" -P /root/gp3/modpacks
 set +e
 (
   docker run -i \
     -p 25565:25565 \
     -e EULA=TRUE \
-    -e TYPE=CURSEFORGE \
+    -e TYPE=SPIGOT \
     -e VERSION=1.12.2 \
     -e MEMORY=6G \
+    -e MAX_TICK_TIME=-1 \
     -e OPS=Draelyr,Qualenal \
-    -e CF_SERVER_MOD=/modpacks/SkyFactory-4_Server_4.2.2.zip \
     -v /etc/timezone:/etc/timezone:ro \
     -v /root/gp3/${var.game}:/data \
-    -v /root/gp3/modpacks:/modpacks \
     ${var.image}
 )
+#-e CF_SERVER_MOD=/modpacks/SkyFactory-4_Server_4.2.2.zip \
+# -v /root/gp3/modpacks:/modpacks \
 set -e
-tar --use-compress-program zstd -cvf "latest.tar.zst" "/root/gp3/${var.game}"
+tar --use-compress-program zstd -cvf "latest.tar.zst" "/root/gp3/${var.game}/"
 aws s3 cp "latest.tar.zst" "s3://${aws_s3_bucket.worlds.id}/${var.game_type}/latest.tar.zst"
 DATE=`date +%H-%M--%m-%d-%y`
 mv "latest.tar.zst" "$DATE.tar.zst"
