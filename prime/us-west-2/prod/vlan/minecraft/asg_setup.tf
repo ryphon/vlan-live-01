@@ -12,6 +12,7 @@ data "template_file" "game" {
   template = <<EOF
 #!/bin/bash
 set -ex
+systemctl start cron
 export AWS_REGION=${var.aws_region}
 export SQS_QUEUE_URL=${aws_sqs_queue.game.id}
 yum update -y
@@ -70,11 +71,19 @@ set +e
 #-e CF_SERVER_MOD=/modpacks/SkyFactory-4_Server_4.2.2.zip \
 # -v /root/gp3/modpacks:/modpacks \
 set -e
+
+cat <<CRONJOB > /root/backup.sh
 tar --use-compress-program zstd -cvf "latest.tar.zst" "/root/gp3/${var.game}/"
 aws s3 cp "latest.tar.zst" "s3://${aws_s3_bucket.worlds.id}/${var.game_type}/latest.tar.zst"
 DATE=`date +%H-%M--%m-%d-%y`
 mv "latest.tar.zst" "$DATE.tar.zst"
 aws s3 cp "$DATE.tar.zst" "s3://${aws_s3_bucket.worlds.id}/${var.game_type}/archive/$DATE.tar.zst"
+rm latest.tar.zst
+rm $DATE.tar.zst
+CRONJOB
+
+(crontab -l 2>/dev/null || true; echo "0 * * * * /root/backup.sh") | crontab -
+
 EOF
 }
 
