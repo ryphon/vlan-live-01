@@ -12,7 +12,6 @@ data "template_file" "game" {
   template = <<EOF
 #!/bin/bash
 set -ex
-systemctl start cron
 export AWS_REGION=${var.aws_region}
 export SQS_QUEUE_URL=${aws_sqs_queue.game.id}
 yum update -y
@@ -56,6 +55,19 @@ mkdir /root/gp3 && mount /dev/nvme1n1 /root/gp3
 aws s3 cp "s3://${aws_s3_bucket.worlds.id}/${var.game_type}/latest.tar.zst" .
 tar --use-compress-program zstd -xvf latest.tar.zst
 rm latest.tar.zst
+
+cat <<CRONJOB > /root/backup.sh
+tar --use-compress-program zstd -cvf "latest.tar.zst" "/root/gp3/${var.game}/"
+aws s3 cp "latest.tar.zst" "s3://${aws_s3_bucket.worlds.id}/${var.game_type}/latest.tar.zst"
+DATE=`date +%H-%M--%m-%d-%y`
+mv "latest.tar.zst" "$DATE.tar.zst"
+aws s3 cp "$DATE.tar.zst" "s3://${aws_s3_bucket.worlds.id}/${var.game_type}/archive/$DATE.tar.zst"
+rm latest.tar.zst
+rm $DATE.tar.zst
+CRONJOB
+
+(crontab -l 2>/dev/null || true; echo "0 * * * * /root/backup.sh") | crontab -
+
 set +e
 (
   docker run -i \
@@ -72,7 +84,6 @@ set +e
 # -v /root/gp3/modpacks:/modpacks \
 set -e
 
-cat <<CRONJOB > /root/backup.sh
 tar --use-compress-program zstd -cvf "latest.tar.zst" "/root/gp3/${var.game}/"
 aws s3 cp "latest.tar.zst" "s3://${aws_s3_bucket.worlds.id}/${var.game_type}/latest.tar.zst"
 DATE=`date +%H-%M--%m-%d-%y`
@@ -80,9 +91,6 @@ mv "latest.tar.zst" "$DATE.tar.zst"
 aws s3 cp "$DATE.tar.zst" "s3://${aws_s3_bucket.worlds.id}/${var.game_type}/archive/$DATE.tar.zst"
 rm latest.tar.zst
 rm $DATE.tar.zst
-CRONJOB
-
-(crontab -l 2>/dev/null || true; echo "0 * * * * /root/backup.sh") | crontab -
 
 EOF
 }
