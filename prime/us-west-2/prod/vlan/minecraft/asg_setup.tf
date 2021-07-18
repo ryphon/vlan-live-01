@@ -59,12 +59,13 @@ rm latest.tar.zst
 cat <<CRONJOB > /root/backup.sh
 tar --use-compress-program zstd -cvf "latest.tar.zst" "/root/gp3/${var.game}/"
 aws s3 cp "latest.tar.zst" "s3://${aws_s3_bucket.worlds.id}/${var.game_type}/latest.tar.zst"
-DATE=`date +%H-%M--%m-%d-%y`
-mv "latest.tar.zst" "$DATE.tar.zst"
-aws s3 cp "$DATE.tar.zst" "s3://${aws_s3_bucket.worlds.id}/${var.game_type}/archive/$DATE.tar.zst"
-rm latest.tar.zst
-rm $DATE.tar.zst
+DATE=\$(date +%H-%M--%m-%d-%y)
+mv "latest.tar.zst" "\$DATE.tar.zst"
+aws s3 cp "\$DATE.tar.zst" "s3://${aws_s3_bucket.worlds.id}/${var.game_type}/archive/\$DATE.tar.zst"
+rm \$DATE.tar.zst
 CRONJOB
+
+chmod +x /root/backup.sh
 
 (crontab -l 2>/dev/null || true; echo "0 * * * * /root/backup.sh") | crontab -
 
@@ -89,7 +90,6 @@ aws s3 cp "latest.tar.zst" "s3://${aws_s3_bucket.worlds.id}/${var.game_type}/lat
 DATE=`date +%H-%M--%m-%d-%y`
 mv "latest.tar.zst" "$DATE.tar.zst"
 aws s3 cp "$DATE.tar.zst" "s3://${aws_s3_bucket.worlds.id}/${var.game_type}/archive/$DATE.tar.zst"
-rm latest.tar.zst
 rm $DATE.tar.zst
 
 EOF
