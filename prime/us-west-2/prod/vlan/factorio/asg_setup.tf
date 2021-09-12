@@ -25,7 +25,7 @@ yum install -y git \
                zstd
 sudo systemctl start docker
 python3 -m pip install pip --upgrade
-python3 -m pip install docker boto3 python-valve firebase_admin
+python3 -m pip install docker boto3 python-valve firebase_admin factorio-rcon-py
 wget https://raw.githubusercontent.com/ryphon/vlan-live-01/main/prime/us-west-2/prod/vlan/${var.game}/termination.py -O termination.py
 wget https://raw.githubusercontent.com/ryphon/vlan-live-01/main/prime/us-west-2/prod/vlan/running.py -O running.py
 nohup python3 -u termination.py > /root/termlog.log &
@@ -52,7 +52,7 @@ mkdir /root/gp3/factorio -p
 chown 845:845 /root/gp3/factorio
 aws s3 cp s3://${aws_s3_bucket.worlds.id}/${var.game_type}/latest.tar.zst .
 tar --use-compress-program zstd -xvf latest.tar.zst
-nohup python3 -u running.py --serverAddress localhost --serverPort 27015 --game "${var.game}" --gameType "${var.game_type}" --name "${var.game_name}" --rconpw $(echo /root/gp3/factorio/config/rconpw) > /root/runlog.log &
+nohup python3 -u running.py --serverAddress localhost --serverPort 27015 --game "${var.game}" --gameType "${var.game_type}" --name "${var.game_name}" --rconpw $(cat /root/gp3/factorio/config/rconpw) > /root/runlog.log &
 rm latest.tar.zst
 set +e
 (

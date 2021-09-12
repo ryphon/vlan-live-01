@@ -61,11 +61,11 @@ def main():
         elif args.game == 'factorio':
             import factorio_rcon
             from factorio_rcon.factorio_rcon import RCONConnectError
-            client = factorio_rcon.RCONClient(args.serverAddress, args.serverPort, args.rconpw, timeout=10, connect_on_init=False)
             try:
-                client.connect()
-                print('No response yet!')
+                factorio_rcon.RCONClient(args.serverAddress, args.serverPort, args.rconpw, timeout=5)
+                break
             except RCONConnectError:
+                print('No response yet!')
                 time.sleep(5)
         elif args.game == 'minecraft':
             from mcstatus import MinecraftServer
