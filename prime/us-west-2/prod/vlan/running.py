@@ -63,6 +63,7 @@ def main():
             from factorio_rcon.factorio_rcon import RCONConnectError
             try:
                 factorio_rcon.RCONClient(args.serverAddress, args.serverPort, args.rconpw, timeout=5)
+                documentStore(args.game, args.gameType, args.name, ip)
                 break
             except RCONConnectError:
                 print('No response yet!')
