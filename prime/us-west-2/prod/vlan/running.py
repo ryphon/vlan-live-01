@@ -44,7 +44,7 @@ def main():
     ip = requests.get('http://169.254.169.254/latest/meta-data/public-ipv4').text
 
     while True:
-        if args.game in ('soldat', 'gmod', 'valheim'):
+        if args.game in ('soldat', 'gmod', 'valheim', 'factorio'):
             import valve.source.a2s
             from valve.source import NoResponseError
             try:

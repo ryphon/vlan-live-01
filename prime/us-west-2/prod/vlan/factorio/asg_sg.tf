@@ -2,14 +2,14 @@ resource "aws_security_group" "game" {
   name   = "${var.game}-${var.game_type}-sg"
   vpc_id = data.terraform_remote_state.vpc.outputs.vpc_id
   ingress {
-    from_port = 2456
-    to_port = 2458
-    protocol = "TCP"
+    from_port = 34197
+    to_port = 34197
+    protocol = "UDP"
     cidr_blocks = ["0.0.0.0/0"]
   }
   ingress {
-    from_port = 2456
-    to_port = 2458
+    from_port = 27015
+    to_port = 27015
     protocol = "UDP"
     cidr_blocks = ["0.0.0.0/0"]
   }
