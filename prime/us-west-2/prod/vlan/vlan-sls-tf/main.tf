@@ -107,3 +107,13 @@ data "terraform_remote_state" "minecraft_qualenal" {
     key    = "prime/${var.aws_region}/prod/vlan/minecraft/qualenal/terraform.tfstate"
   }
 }
+
+data "terraform_remote_state" "factorio_default" {
+  backend = "s3"
+
+  config = {
+    region = var.aws_region
+    bucket = var.tfstate_global_bucket
+    key    = "prime/${var.aws_region}/prod/vlan/factorio/default/terraform.tfstate"
+  }
+}
