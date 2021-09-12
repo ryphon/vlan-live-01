@@ -10,7 +10,7 @@ sqs = boto3.client('sqs', region_name=region)
 asg = boto3.client('autoscaling', region_name=region)
 docker_client = docker.from_env()
 
-backup_queue_url = 'https://sqs.{}.amazonaws.com/456410706824/valheim-default-lifecycle'.format(region)
+backup_queue_url = 'https://sqs.{}.amazonaws.com/456410706824/factorio-default-lifecycle'.format(region)
 # frustrating to hard code this, idk about this quite yet
 queue_url = os.environ.get('SQS_QUEUE_URL', backup_queue_url)
 while True:

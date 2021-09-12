@@ -29,7 +29,6 @@ python3 -m pip install docker boto3 python-valve firebase_admin
 wget https://raw.githubusercontent.com/ryphon/vlan-live-01/main/prime/us-west-2/prod/vlan/${var.game}/termination.py -O termination.py
 wget https://raw.githubusercontent.com/ryphon/vlan-live-01/main/prime/us-west-2/prod/vlan/running.py -O running.py
 nohup python3 -u termination.py > /root/termlog.log &
-nohup python3 -u running.py --serverAddress localhost --serverPort 27015 --game "${var.game}" --gameType "${var.game_type}" --name "${var.game_name}"> /root/runlog.log &
 IPV4=$(curl 169.254.169.254/latest/meta-data/public-ipv4)
 aws route53 change-resource-record-sets --hosted-zone-id ${data.terraform_remote_state.route53.outputs.hosted_zone_id} --change-batch "{
    \"Changes\":[
@@ -53,6 +52,7 @@ mkdir /root/gp3/factorio -p
 chown 845:845 /root/gp3/factorio
 aws s3 cp s3://${aws_s3_bucket.worlds.id}/${var.game_type}/latest.tar.zst .
 tar --use-compress-program zstd -xvf latest.tar.zst
+nohup python3 -u running.py --serverAddress localhost --serverPort 27015 --game "${var.game}" --gameType "${var.game_type}" --name "${var.game_name}" --rconpw $(echo /root/gp3/factorio/config/rconpw) > /root/runlog.log &
 rm latest.tar.zst
 set +e
 (
@@ -60,8 +60,7 @@ set +e
   -p 34197:34197/udp \
   -p 27015:27015/tcp \
   -v /root/gp3/factorio:/factorio \
-  --name factorio \
-  -e LOAD_LATEST_SAVE=true
+  -e LOAD_LATEST_SAVE=true \
   factoriotools/factorio
 )
 set -e

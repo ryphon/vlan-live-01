@@ -39,12 +39,13 @@ def main():
     parser.add_argument('--game', type=str)
     parser.add_argument('--gameType', type=str)
     parser.add_argument('--name', type=str)
+    parser.add_argument('--rconpw', type=str, default="None")
     args = parser.parse_args()
 
     ip = requests.get('http://169.254.169.254/latest/meta-data/public-ipv4').text
 
     while True:
-        if args.game in ('soldat', 'gmod', 'valheim', 'factorio'):
+        if args.game in ('soldat', 'gmod', 'valheim'):
             import valve.source.a2s
             from valve.source import NoResponseError
             try:
@@ -57,6 +58,15 @@ def main():
             except NoResponseError:
                 time.sleep(5)
                 print('No response yet!')
+        elif args.game == 'factorio':
+            import factorio_rcon
+            from factorio_rcon.factorio_rcon import RCONConnectError
+            client = factorio_rcon.RCONClient(args.serverAddress, args.serverPort, args.rconpw, timeout=10, connect_on_init=False)
+            try:
+                client.connect()
+                print('No response yet!')
+            except RCONConnectError:
+                time.sleep(5)
         elif args.game == 'minecraft':
             from mcstatus import MinecraftServer
             try:
