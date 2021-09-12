@@ -35,7 +35,7 @@ aws route53 change-resource-record-sets --hosted-zone-id ${data.terraform_remote
       {
          \"Action\":\"UPSERT\",
          \"ResourceRecordSet\":{
-            \"Name\":\"${var.game}.${var.game_type_short}.itisamystery.com\",
+            \"Name\":\"${var.game}.${var.game_type}.itisamystery.com\",
             \"ResourceRecords\":[
                {
                   \"Value\":\"$IPV4\"
