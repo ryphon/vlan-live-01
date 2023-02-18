@@ -46,16 +46,15 @@ def main():
 
     while True:
         if args.game in ('soldat', 'gmod', 'valheim'):
-            import valve.source.a2s
-            from valve.source import NoResponseError
+            import a2s
+            from a2s import socket.timeout
             try:
                 SERVER_ADDRESS = (args.serverAddress, args.serverPort)
-                with valve.source.a2s.ServerQuerier(SERVER_ADDRESS) as server:
-                    server.info()
-                    # need to genericize this
-                    documentStore(args.game, args.gameType, args.name, ip)
-                    break
-            except NoResponseError:
+                a2s.info(SERVER_ADDRESS)
+                # need to genericize this
+                documentStore(args.game, args.gameType, args.name, ip)
+                break
+            except:
                 time.sleep(5)
                 print('No response yet!')
         elif args.game == 'factorio':
