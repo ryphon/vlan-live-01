@@ -47,7 +47,6 @@ def main():
     while True:
         if args.game in ('soldat', 'gmod', 'valheim'):
             import a2s
-            from a2s import socket.timeout
             try:
                 SERVER_ADDRESS = (args.serverAddress, args.serverPort)
                 a2s.info(SERVER_ADDRESS)
