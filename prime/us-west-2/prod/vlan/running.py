@@ -51,6 +51,7 @@ def main():
                 SERVER_ADDRESS = (args.serverAddress, args.serverPort)
                 a2s.info(SERVER_ADDRESS)
                 # need to genericize this
+                # tbh, no i don't. it's functionalized, having a bit of repeat is irrelevant, it's 3 lines
                 documentStore(args.game, args.gameType, args.name, ip)
                 break
             except:
