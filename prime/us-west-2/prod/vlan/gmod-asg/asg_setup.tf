@@ -22,11 +22,12 @@ yum install -y git \
                gcc-c++
 sudo systemctl start docker
 python3 -m pip install pip --upgrade
-python3 -m pip install docker boto3 python-a2s firebase_admin
+python3 -m pip install docker boto3 python-a2s firebase_admin cloudflare
 sudo systemctl start docker
 IPV4=$(curl 169.254.169.254/latest/meta-data/public-ipv4)
 wget https://raw.githubusercontent.com/ryphon/vlan-live-01/main/prime/us-west-2/prod/vlan/running.py -O running.py
 nohup python3 -u running.py --serverAddress localhost --serverPort 27015 --game "${var.game}" --gameType "${var.game_type_short}" --name "${var.game_name}" > /root/runlog.log &
+
 aws route53 change-resource-record-sets --hosted-zone-id ${data.terraform_remote_state.route53.outputs.hosted_zone_id} --change-batch "{
    \"Changes\":[
       {
