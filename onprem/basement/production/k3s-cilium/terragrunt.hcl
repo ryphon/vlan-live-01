@@ -2,6 +2,7 @@
 # working directory, into a temporary folder, and execute your Terraform commands in that folder.
 terraform {
   source = "/home/dx/github/k3s-terraform//."
+  source = "git@git.dragonfruit.dev:k8s/k3s-terraform?branch=cilium"
 }
 
 # Include all settings from the root terragrunt.hcl file
