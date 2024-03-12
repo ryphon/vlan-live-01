@@ -1,8 +1,7 @@
 # Terragrunt will copy the Terraform configurations specified by the source parameter, along with any files in the
 # working directory, into a temporary folder, and execute your Terraform commands in that folder.
 terraform {
-  source = "/home/dx/github/k3s-terraform//."
-  source = "git@git.dragonfruit.dev:k8s/k3s-terraform?branch=cilium"
+  source = "git::ssh://git@git.dragonfruit.dev:12222/k8s/k3s-terraform.git?ref=cilium"
 }
 
 # Include all settings from the root terragrunt.hcl file
@@ -50,7 +49,15 @@ inputs = {
       sockets = 1
       cpu_cores = 4
       disk_size = 32
-      memory = "4096"
+      memory = 4096
     }
+    #tf-k3s2-controller-b = {
+    #  name = "tf-k3s2-controller-b"
+    #  vm_id = 6002
+    #  sockets = 1
+    #  cpu_cores = 4
+    #  disk_size = 32
+    #  memory = "4096"
+    #}
   }
 }
